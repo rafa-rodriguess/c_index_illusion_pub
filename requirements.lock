@@ -1,0 +1,31 @@
+# Locked dependency set for reproducible installs (author host: 2026-07-13).
+# Generated from Anaconda Python 3.13.5 on macOS arm64 (Apple M4).
+#
+# Install (recommended for clone-and-run):
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.lock
+#
+# Loose ranges for exploration remain in requirements.txt.
+# Domain-3 RSF train needs a separate patched env — see REPRODUCE.md / CDS_D3_PYTHON.
+
+numpy==2.1.3
+pandas==2.2.3
+scipy==1.15.3
+scikit-learn==1.8.0
+scikit-survival==0.27.0
+lifelines==0.30.1
+xgboost==2.1.4
+optuna==4.9.0
+# Survival / eval stack (PyPI names)
+SurvivalEVAL==0.8.0
+pycop==0.0.13
+statsmodels==0.14.4
+# Block AN — Lillelund position-cindex harness (required by A03_env_check)
+torch==2.11.0
+requests==2.32.3
+pyarrow==24.0.0
+openpyxl==3.1.5
+joblib==1.4.2
+matplotlib==3.10.0
+seaborn==0.13.2
+SciencePlots==2.2.2

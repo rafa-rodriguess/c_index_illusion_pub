@@ -1,0 +1,22 @@
+data/raw/
+data/interim/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+*.egg-info/
+dist/
+build/
+.ipynb_checkpoints/
+.venv/
+venv/
+results/models/
+results/logs/
+*.xlsx
+*.zip
+*.7z
+*.parquet
+
+# matplotlib cache for Block P
+results/paper/.mplconfig/

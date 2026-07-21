@@ -1,0 +1,135 @@
+// Figure 1 — F01_workflow (artefatos.md §1, five corrections applied)
+// Compile: dot -Tpdf F01_workflow.gv -o F01_workflow.pdf
+digraph MacroPipeline {
+  rankdir=TB;
+  graph [
+    fontname="Helvetica",
+    fontsize=11,
+    pad="0.3",
+    nodesep="0.45",
+    ranksep="0.42",
+    splines=true
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Helvetica",
+    fontsize=10,
+    fillcolor="#F5F5F5",
+    color="#333333",
+    margin="0.12,0.08"
+  ];
+  edge [
+    color="#555555",
+    arrowsize=0.7
+  ];
+
+  // ── Parallel inputs + early protocol freeze (correction 2) ───
+  subgraph cluster_inputs {
+    label="Parallel inputs";
+    labelloc=t;
+    fontsize=10;
+    color="#AAAAAA";
+    style="dashed";
+
+    { rank=same; d_freeze; d1; d2; d3; an; }
+    d_freeze [
+      label="Confirm frozen\nprotocol",
+      fillcolor="#E1BEE7",
+      style="rounded,filled,dashed"
+    ];
+    // Correction (1): domain names on reproduce labels
+    d1 [label="Reproduce D1\n(engineering)"];
+    d2 [label="Reproduce D2\n(credit)"];
+    d3 [label="Reproduce D3\n(platforms)"];
+    an [label="Validate anchor"];
+  }
+
+  // ── Phase A — reproduction + gate (§3.3) ─────────────────────
+  subgraph cluster_A {
+    label="Phase A — reproduction (§3.3)";
+    labelloc=t;
+    fontsize=10;
+    color="#4A90D9";
+    style="dashed";
+    fillcolor="#E8F1FB";
+
+    a_gaps [label="Report gaps", fillcolor="#D6E6F8"];
+    a_gate [label="Gate reproduction", fillcolor="#BBDEFB"];
+  }
+
+  // Anchor — independent synthetic check (§3.4)
+  an_check [label="Confirm ladder\n(§3.4)", fillcolor="#FFE0B2"];
+
+  // ── Phase B — evaluation ladder (§3.5) ───────────────────────
+  // Correction (3): single node (metrics computed independently)
+  subgraph cluster_B {
+    label="Phase B — ladder (§3.5)";
+    labelloc=t;
+    fontsize=10;
+    color="#2E7D32";
+    style="dashed";
+    fillcolor="#E8F5E9";
+
+    b_ladder [label="Score ladder metrics", fillcolor="#C8E6C9"];
+  }
+
+  // ── Phase C — domain-specific probes (§3.6) ──────────────────
+  subgraph cluster_C {
+    label="Phase C — probes (§3.6)";
+    labelloc=t;
+    fontsize=10;
+    color="#F9A825";
+    style="dashed";
+    fillcolor="#FFF8E1";
+
+    { rank=same; c_h4; c_h3; c_h5; }
+    c_h4 [label="Ablate features\n(H4 · engineering)", fillcolor="#FFECB3"];
+    c_h3 [label="Bias CIF\n(H3 · credit)", fillcolor="#FFECB3"];
+    c_h5 [label="Score horizons\n(H5 · platforms)", fillcolor="#FFECB3"];
+  }
+
+  // ── Phase D — rigor wrap (§3.7) ──────────────────────────────
+  subgraph cluster_D {
+    label="Phase D — rigor (§3.7)";
+    labelloc=t;
+    fontsize=10;
+    color="#6A1B9A";
+    style="dashed";
+    fillcolor="#F3E5F5";
+
+    d_leak    [label="Audit leakage", fillcolor="#E1BEE7"];
+    d_holm    [label="Control testing", fillcolor="#E1BEE7"];
+    d_verdict [label="Emit verdict", fillcolor="#CE93D8"];
+    d_harness [label="Export harness", fillcolor="#CE93D8"];
+  }
+
+  // Baselines → Phase A
+  d1 -> a_gaps;
+  d2 -> a_gaps;
+  d3 -> a_gaps;
+  a_gaps -> a_gate;
+
+  // Anchor independent of Phase A
+  an -> an_check;
+
+  // Cleared gate → Phase B
+  a_gate -> b_ladder;
+  // Correction (4): instrument-validation edge labeled
+  an_check -> b_ladder [label="validates instrument", fontsize=9, fontcolor="#666666"];
+
+  // Ladder → domain probes
+  b_ladder -> c_h4;
+  b_ladder -> c_h3;
+  b_ladder -> c_h5;
+
+  // Probes → rigor
+  c_h4 -> d_leak;
+  c_h3 -> d_leak;
+  c_h5 -> d_leak;
+  d_leak -> d_holm;
+
+  // Correction (5): harness parallel to verdict
+  d_holm -> d_verdict;
+  d_holm -> d_harness;
+}
